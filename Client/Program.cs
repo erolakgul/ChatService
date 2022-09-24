@@ -1,2 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+#region app environment
+Console.WriteLine("Client Application"); 
+#endregion
+
+
+Console.ReadKey();

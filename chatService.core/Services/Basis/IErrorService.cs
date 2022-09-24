@@ -22,5 +22,6 @@ namespace chatService.core.Services.Basis
         /// <param name="key"></param>
         /// <param name="guid"></param>
         void RemoveError(object key, Guid guid);
+        ErrorDto GetError(object key, Guid guid);
     }
 }

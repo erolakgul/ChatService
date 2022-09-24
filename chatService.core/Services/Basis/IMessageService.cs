@@ -22,5 +22,7 @@ namespace chatService.core.Services.Basis
         /// <param name="key"></param>
         /// <param name="guid"></param>
         void RemoveMessage(object key, Guid guid);
+
+        MessageDto GetMessage(object key,Guid guid);
     }
 }

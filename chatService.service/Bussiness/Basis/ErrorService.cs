@@ -16,7 +16,12 @@ namespace chatService.service.Bussiness.Basis
             _unitOfWork.ErrorRepository.AddDto(key, guid, entity);
             return entity;
         }
-         
+
+        public ErrorDto GetError(object key, Guid guid)
+        {
+            return _unitOfWork.ErrorRepository.GetDto(key, guid);
+        }
+
         public void RemoveError(object key, Guid guid)
         {
             _unitOfWork.ErrorRepository.RemoveDto(key, guid);  

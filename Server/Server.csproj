@@ -7,4 +7,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\chatService.core\chatService.core.csproj" />
+    <ProjectReference Include="..\chatService.data\chatService.data.csproj" />
+    <ProjectReference Include="..\chatService.helper\chatService.helper.csproj" />
+    <ProjectReference Include="..\chatService.service\chatService.service.csproj" />
+  </ItemGroup>
+
 </Project>

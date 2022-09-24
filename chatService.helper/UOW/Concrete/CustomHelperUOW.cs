@@ -8,7 +8,7 @@ namespace chatService.helper.UOW.Concrete
     /// unit of work class items for helper service
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class CustomHelperUOW<T> : ICustomHelperUOW<T>
+    public class CustomHelperUOW<T> : ICustomHelperUOW<T> 
     {
         private CustomCacheRepository<T> _customCacheRepository;
         public ICustomCacheRepository<T> customCacheRepositoryUOW => _customCacheRepository = _customCacheRepository ?? new CustomCacheRepository<T>();

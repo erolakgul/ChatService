@@ -18,6 +18,11 @@ namespace chatService.service.Bussiness.Basis
             return entity;
         }
 
+        public MessageDto GetMessage(object key, Guid guid)
+        {
+            return _unitOfWork.MessageRepository.GetDto(key, guid);    
+        }
+
         public void RemoveMessage(object key, Guid guid)
         {
             _unitOfWork.MessageRepository.RemoveDto(key, guid);

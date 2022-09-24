@@ -30,6 +30,19 @@ namespace chatService.data.Repositories
         }
 
         /// <summary>
+        /// get data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public T GetDto(object key, Guid guid)
+        {
+            if (guid != Guid.Empty) key += guid.ToString();
+            return (T) _context.customCacheRepositoryUOW.Get(key);
+        }
+
+        /// <summary>
         /// main removing data method for all repo
         /// </summary>
         /// <param name="key"></param>

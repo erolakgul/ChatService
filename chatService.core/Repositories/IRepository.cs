@@ -22,5 +22,13 @@
         /// <param name="guid"></param>
         void RemoveDto(object key, Guid guid);
         //List<TEntity> GetAllDto(object key);
+
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        TEntity GetDto(object key,Guid guid);
     }
 }
