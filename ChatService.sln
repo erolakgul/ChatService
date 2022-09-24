@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{1FBE458D-1476-440E-93CB-630DEB03EA4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{1FBE458D-1476-440E-93CB-630DEB03EA4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{5CF5A12E-3816-4B06-B871-29AA74E8F5AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{5CF5A12E-3816-4B06-B871-29AA74E8F5AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestChatService", "UnitTestChatService\UnitTestChatService.csproj", "{9AA823E9-99C1-4A12-A464-BCF9509F86A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestChatService", "UnitTestChatService\UnitTestChatService.csproj", "{9AA823E9-99C1-4A12-A464-BCF9509F86A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatService.core", "chatService.core\chatService.core.csproj", "{203457ED-1176-4A74-9C67-FE062A3D7316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9AA823E9-99C1-4A12-A464-BCF9509F86A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA823E9-99C1-4A12-A464-BCF9509F86A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA823E9-99C1-4A12-A464-BCF9509F86A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{203457ED-1176-4A74-9C67-FE062A3D7316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{203457ED-1176-4A74-9C67-FE062A3D7316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{203457ED-1176-4A74-9C67-FE062A3D7316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{203457ED-1176-4A74-9C67-FE062A3D7316}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
