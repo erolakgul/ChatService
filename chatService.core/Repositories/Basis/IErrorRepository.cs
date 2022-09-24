@@ -8,7 +8,7 @@ namespace chatService.core.Repositories.Basis
     public interface IErrorRepository : IRepository<ErrorDto>
     {
         /// <summary>
-        /// repository specific method 
+        /// repository specific test method 
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
