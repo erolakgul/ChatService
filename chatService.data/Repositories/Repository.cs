@@ -1,4 +1,5 @@
 ﻿using chatService.core.Repositories;
+using chatService.helper.UOW.Concrete;
 
 namespace chatService.data.Repositories
 {
@@ -8,6 +9,11 @@ namespace chatService.data.Repositories
     /// <typeparam name="T"></typeparam>
     public class Repository<T> : IRepository<T> where T : class
     {
+        protected readonly CustomHelperUOW<T> _context;
+        public Repository(CustomHelperUOW<T> context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// main adding data method for all repo
         /// </summary>
@@ -18,7 +24,9 @@ namespace chatService.data.Repositories
         /// <exception cref="NotImplementedException"></exception>
         public T AddDto(object key, Guid guid, T entity)
         {
-            throw new NotImplementedException();
+            if(guid != Guid.Empty ) key += guid.ToString();
+            _context.customCacheRepositoryUOW.Set(key, entity); 
+            return entity;
         }
 
         /// <summary>
@@ -29,7 +37,8 @@ namespace chatService.data.Repositories
         /// <exception cref="NotImplementedException"></exception>
         public void RemoveDto(object key, Guid guid)
         {
-            throw new NotImplementedException();
+            if (guid != Guid.Empty) key += guid.ToString();
+            _context.customCacheRepositoryUOW.Remove(key);
         }
     }
 }

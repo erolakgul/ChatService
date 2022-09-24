@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\chatService.core\chatService.core.csproj" />
+    <ProjectReference Include="..\chatService.helper\chatService.helper.csproj" />
   </ItemGroup>
 
 </Project>
