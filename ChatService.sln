@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatService.helper", "chatS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatService.service", "chatService.service\chatService.service.csproj", "{EBA85C34-0EB4-4A71-AA09-27F0C08C0975}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatService.startup", "chatService.startup\chatService.startup.csproj", "{8EB70492-0DD0-41FF-B989-82A95A0B5797}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EBA85C34-0EB4-4A71-AA09-27F0C08C0975}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA85C34-0EB4-4A71-AA09-27F0C08C0975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA85C34-0EB4-4A71-AA09-27F0C08C0975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB70492-0DD0-41FF-B989-82A95A0B5797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB70492-0DD0-41FF-B989-82A95A0B5797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB70492-0DD0-41FF-B989-82A95A0B5797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB70492-0DD0-41FF-B989-82A95A0B5797}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

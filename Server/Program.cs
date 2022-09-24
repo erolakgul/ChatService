@@ -1,12 +1,8 @@
 ﻿using chatService.core.DTO;
-using chatService.core.Services.Basis;
 using chatService.core.UOW;
-using chatService.data.UOW;
-using chatService.helper.UOW.Concrete;
-using chatService.helper.UOW.Interface;
 using chatService.service.Bussiness.Basis;
+using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
-using Server.Provider;
 
 #region app environment
 Console.WriteLine("Server Application");

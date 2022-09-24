@@ -1,22 +1,15 @@
-﻿using chatService.core.Services.Basis;
+﻿
+using chatService.core.Services.Basis;
 using chatService.core.UOW;
 using chatService.data.UOW;
 using chatService.service.Bussiness.Basis;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Server.Provider
+namespace chatService.startup.Provider
 {
     public class CustomServiceProvider
     {
-         ServiceProvider serviceProvider;
-
-        //public CustomServiceProvider()
-        //{
-        //    serviceProvider = new ServiceCollection()
-        //                              .AddTransient<IMessageService, MessageService>()
-        //                              .AddTransient<IErrorService, ErrorService>()
-        //                              .BuildServiceProvider();
-        //}
+        ServiceProvider serviceProvider;
 
         public ServiceProvider GetServiceProvider()
         {
