@@ -16,6 +16,7 @@
     <ProjectReference Include="..\chatService.data\chatService.data.csproj" />
     <ProjectReference Include="..\chatService.helper\chatService.helper.csproj" />
     <ProjectReference Include="..\chatService.service\chatService.service.csproj" />
+    <ProjectReference Include="..\chatService.startup\chatService.startup.csproj" />
   </ItemGroup>
 
 </Project>
