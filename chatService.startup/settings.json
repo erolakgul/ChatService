@@ -1,0 +1,14 @@
+{
+  "Settings": {
+    "Connection_1": {
+      "IpAddress": "127.0.0.1",
+      "PortNumber": "1450",
+      "IsActive": true
+    },
+    "Connection_2": {
+      "IpAddress": "192.128.0.1",
+      "PortNumber": "1903",
+      "IsActive": false
+    }
+  }
+}

@@ -25,7 +25,7 @@ string _content = String.Empty;
 
 if (nickNameKey.ToString().Length > 0)
 {
-    Console.WriteLine("To send a new message, simply type NEW");
+    Console.WriteLine("....To send a new message, simply type NEW");
     Console.WriteLine("");
 
     while(Console.ReadLine() == "NEW")
@@ -34,6 +34,7 @@ if (nickNameKey.ToString().Length > 0)
         _content = Console.ReadLine();
         if (_content.Length > 0)
         {
+            Console.WriteLine(".."); Console.WriteLine("...");
             Console.WriteLine("your message sending....");
         }
 
