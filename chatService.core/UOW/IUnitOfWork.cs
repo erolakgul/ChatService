@@ -1,4 +1,5 @@
 ﻿using chatService.core.Repositories.Basis;
+using chatService.core.Repositories.Main;
 
 namespace chatService.core.UOW
 {
@@ -12,5 +13,6 @@ namespace chatService.core.UOW
         /// </summary>
         IErrorRepository ErrorRepository { get; }
         IMessageRepository MessageRepository { get; }
+        ISocketRepository SocketRepository { get; } 
     }
 }
