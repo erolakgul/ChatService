@@ -9,21 +9,26 @@ namespace chatService.data.Repositories.Main
     public class SocketRepository : ISocketRepository
     {
         private readonly Socket _socket;
-        private readonly IPEndPoint _ipEndPoint;
+        private IPEndPoint _ipEndPoint;
         private SocketError _socketError;
 
         byte[] _data = new byte[1024];
-        public SocketRepository(IPEndPoint ipEndPoint)
+        public SocketRepository()
         {
-            _ipEndPoint = ipEndPoint;
-
             #region defined socket configuration such as type, protocol and network ecosystem
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             #endregion
         }
 
-        public void Start()
+        public void Start(IPEndPoint ipEndPoint)
         {
+            if (ipEndPoint is null)
+            {
+                Console.WriteLine("IPEndPoint could not identify");
+                return;
+            }
+            _ipEndPoint = ipEndPoint;
+
             #region async call back for onconnected
             _socket.BeginConnect(_ipEndPoint, OnConnected, null);
             #endregion
