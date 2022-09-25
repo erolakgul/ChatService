@@ -20,11 +20,18 @@ namespace chatService.data.UOW
         private ErrorRepository _errorRepository;
         private MessageRepository _messageRepository;
         private SocketRepository _socketRepository;
+        private ListenerRepository _listenerRepository;
+        private ClientRepository _clientRepository;
+
 
         public IErrorRepository ErrorRepository => _errorRepository = _errorRepository ?? new ErrorRepository(new CustomHelperUOW<ErrorDto>());
 
         public IMessageRepository MessageRepository => _messageRepository = _messageRepository ?? new MessageRepository(new CustomHelperUOW<MessageDto>());
 
         public ISocketRepository SocketRepository => _socketRepository = _socketRepository ?? new SocketRepository();
+
+        public IListenerRepository ListenerRepository => _listenerRepository = _listenerRepository ?? new ListenerRepository();
+
+        public IClientRepository ClientRepository => _clientRepository = _clientRepository ?? new ClientRepository();       
     }
 }

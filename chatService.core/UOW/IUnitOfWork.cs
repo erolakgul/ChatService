@@ -13,6 +13,8 @@ namespace chatService.core.UOW
         /// </summary>
         IErrorRepository ErrorRepository { get; }
         IMessageRepository MessageRepository { get; }
-        ISocketRepository SocketRepository { get; } 
+        ISocketRepository SocketRepository { get; }
+        IListenerRepository ListenerRepository { get; }
+        IClientRepository ClientRepository { get; }
     }
 }

@@ -75,6 +75,7 @@ namespace chatService.data.Repositories.Main
                 _socket.EndDisconnect(asyncResult);
 
                 _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.Broadcast, OnReceived, null);
+                Console.WriteLine("... Listening is successfuly. \n IpAddress : {0} \n Port No : {1}",_ipEndPoint.Address, _ipEndPoint.Port);
                 #endregion
             }
             catch (Exception ex)
