@@ -5,7 +5,7 @@ using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
 
 #region app environment
-Console.WriteLine("Server Application");
+Console.WriteLine("...................Server Application...................");
 Console.WriteLine("");
 #endregion
 
