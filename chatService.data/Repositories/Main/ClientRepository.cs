@@ -14,15 +14,20 @@ namespace chatService.data.Repositories.Main
         public OnMessageReceived _onMessageReceived;
         Socket _socket;
         SocketError _socketError;
-        byte[] _dataBuffer = new byte[1024];     
+        byte[] _dataBuffer = new byte[1024];
         #endregion
+
+        public ClientRepository()
+        {
+
+        }
 
         public void Start(Socket socket)
         {
             _socket = socket;
 
             #region starting listen the date coming from socket
-            _socket.BeginReceive(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.Broadcast, OnReceivedCallBack, null);  
+            _socket.BeginReceive(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, OnReceivedCallBack, null);  
             #endregion
         }
 
@@ -32,13 +37,22 @@ namespace chatService.data.Repositories.Main
 
             if (dataLength <= 0 || _socketError != SocketError.Success)
             {
-                Console.WriteLine("There is no data. Connection must be controlled...");
+                Console.WriteLine("#CLIENTREPOONRECEIVEDCALLBACK# There is no data. Connection must be controlled...");
                 Console.WriteLine("");
                 return;
             }
 
             byte[] dataBuffer = new byte[dataLength];
-            Array.Copy(_dataBuffer, 0, dataBuffer, 0, _dataBuffer.Length);
+            Array.Copy(_dataBuffer, 0, dataBuffer, 0, dataBuffer.Length);
+
+            // Gelen datayı burada ele alacağız.
+            HandleReceivedData(dataBuffer);
+
+            // Tekrardan socket üzerinden data dinlemeye başlıyoruz.
+            // Start();
+
+            // Socket üzerinden data dinlemeye başlıyoruz.
+            _socket.BeginReceive(_dataBuffer, 0, dataBuffer.Length, SocketFlags.None, OnReceivedCallBack, null);
 
         }
 

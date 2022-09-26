@@ -45,13 +45,13 @@ namespace chatService.data.Repositories.Main
                 #endregion
 
                 #region data tranfer is started
-                _socket.BeginSend(arrSegList, SocketFlags.Broadcast, out _socketError, (asyncResult) =>
+                _socket.BeginSend(arrSegList, SocketFlags.None, out _socketError, (asyncResult) =>
                  {
                
                      int sentDataLength = _socket.EndSend(asyncResult,out _socketError);
-                     if (sentDataLength > 0 || _socketError != SocketError.Success)
+                     if (sentDataLength <= 0 || _socketError != SocketError.Success)
                      {
-                         Console.WriteLine("There is no data. Connection must be controlled..");
+                         Console.WriteLine("#SOCKETREPOTRANSFER# There is no data. Connection must be controlled..");
                          return;
                      }
                
@@ -59,11 +59,9 @@ namespace chatService.data.Repositories.Main
 
                 if (_socketError != SocketError.Success)
                 {
-                    Console.WriteLine("Connection must be controlled..");
+                    Console.WriteLine("#SOCKETREPOTRANSFER# Connection must be controlled..");
                 }
                 #endregion
-
-
             }
         }
 
@@ -72,10 +70,13 @@ namespace chatService.data.Repositories.Main
             try
             {
                 #region firstly ended async connecting process , then listen the socket that connected
-                _socket.EndDisconnect(asyncResult);
+                _socket.EndConnect(asyncResult);
 
-                _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.Broadcast, OnReceived, null);
-                Console.WriteLine("... Listening is successfuly. \n IpAddress : {0} \n Port No : {1}",_ipEndPoint.Address, _ipEndPoint.Port);
+                _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.None, OnReceived, null);
+
+                Console.WriteLine("... Listening is successfuly. \n    IpAddress : {0} \n    Port No   : {1}",_ipEndPoint.Address, _ipEndPoint.Port);
+                Console.WriteLine("");
+                Console.WriteLine("What is your nickname ?");
                 #endregion
             }
             catch (Exception ex)
@@ -92,13 +93,13 @@ namespace chatService.data.Repositories.Main
 
             if (dataLength <= 0 || _socketError != SocketError.Success)
             {
-                Console.WriteLine("There is no data. Connection must be controlled...");
+                Console.WriteLine("#SOCKETREPOONRECEIVED# There is no data. Connection must be controlled...");
                 Console.WriteLine("");
                 return;
             }
 
             #region if data receiving is successfuly, continue listening the socket
-            _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.Broadcast, OnReceived, null); 
+            _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.None, OnReceived, null); 
             #endregion
         }
     }
