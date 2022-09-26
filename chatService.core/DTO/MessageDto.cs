@@ -1,5 +1,6 @@
 ﻿namespace chatService.core.DTO
 {
+    [Serializable]
     public class MessageDto : Initialized
     {
         /// <summary>

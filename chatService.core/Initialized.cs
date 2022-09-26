@@ -2,6 +2,7 @@
 
 namespace chatService.core
 {
+    [Serializable]
     /// <summary>
     /// base class for dt objects
     /// </summary>

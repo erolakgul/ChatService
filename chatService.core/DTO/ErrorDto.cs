@@ -1,5 +1,6 @@
 ﻿namespace chatService.core.DTO
 {
+    [Serializable]
     /// <summary>
     /// the class what will be returned to clients in error situations
     /// </summary>

@@ -1,6 +1,4 @@
-﻿using chatService.core.DTO;
-using chatService.core.UOW;
-using chatService.service.Bussiness.Basis;
+﻿using chatService.core.UOW;
 using chatService.service.Bussiness.Main;
 using chatService.startup.Configurations;
 using chatService.startup.Provider;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 #region app environment
 Console.WriteLine("...................Server Application...................");
-Console.WriteLine("");
 #endregion
 
 #region get dependency injection
@@ -22,7 +19,8 @@ string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
 #endregion
 
-Console.WriteLine(connectionSettings.PortNumber + " numbered port is listened...");
+Console.WriteLine("");
+Console.WriteLine(" Server started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine("");
 
 #region getting listener service
@@ -30,6 +28,8 @@ ListenerService listenerService = new(iUnitOfWork);
 
 listenerService.Start(Convert.ToInt32(connectionSettings.PortNumber), connectionSettings.MaxCountQueue);
 #endregion
+
+
 /*
 #region get instance for messagedto caching operation
 MessageService messageService = new MessageService(unitOfWork : iUnitOfWork);
