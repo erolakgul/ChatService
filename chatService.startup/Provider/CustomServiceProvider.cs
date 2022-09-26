@@ -20,7 +20,7 @@ namespace chatService.startup.Provider
                                      .AddTransient<IErrorService, ErrorService>()
                                      .AddTransient<ISocketService, SocketService>()
                                      .AddTransient<IListenerService, ListenerService>()
-                                      .AddTransient<IClientService, ClientService>()
+                                     .AddTransient<IClientService, ClientService>()
                                      .AddTransient<IUnitOfWork, UnitOfWork>()
                                      .BuildServiceProvider();
 

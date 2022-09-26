@@ -33,7 +33,14 @@ namespace chatService.helper.Repository.Concretes
 
         public object Get(object key)
         {
-            return _memoryCache.Get(key);
+            object value;
+
+            if (_memoryCache.TryGetValue(key, out value))
+            {
+                return _memoryCache.Get(key);
+            }
+
+            return key;
         }
 
         public void Remove(object key)

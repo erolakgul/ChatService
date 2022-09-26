@@ -1,6 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
+#region app environment
 using chatService.core.DTO;
 using chatService.core.UOW;
+using chatService.helper.UOW.Concrete;
+using chatService.helper.UOW.Interface;
 using chatService.service.Bussiness.Basis;
 using chatService.service.Bussiness.Main;
 using chatService.startup.Configurations;
@@ -8,8 +12,7 @@ using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
-#region app environment
-Console.WriteLine("...................Client Application...................");
+Console.WriteLine("...................Client Anatolia Application...................");
 #endregion
 
 #region getting json path
@@ -35,9 +38,8 @@ System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.I
 socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
 
-
 Console.WriteLine();
-Console.WriteLine(" Client started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
+Console.WriteLine(" Client Anatolia started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine();
 
 #region get instance for errordto caching service
@@ -58,6 +60,7 @@ string nickNameKey = Console.ReadLine();
 string _content = String.Empty;
 #endregion
 
+
 #region communication operation
 if (nickNameKey.ToString().Length > 0)
 {
@@ -77,6 +80,7 @@ if (nickNameKey.ToString().Length > 0)
         {
             Console.WriteLine(".."); Console.WriteLine("...");
             Console.WriteLine("your message sending....");
+            Console.WriteLine("");
         }
 
         #region fill dto and save cache
