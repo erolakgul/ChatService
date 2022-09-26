@@ -63,7 +63,8 @@ namespace chatService.data.Repositories.Main
         public void OnMessageReceived(MessageDto messageDto)
         {
             System.Threading.Thread.Sleep(1000);
-            Console.WriteLine(" Communication ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", messageDto.SessionID , messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
+            Console.WriteLine("*****************************" + messageDto.NickName + "*****************************");
+            Console.WriteLine(" Session ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", messageDto.SessionID , messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
             Console.WriteLine("");
             Console.WriteLine("");
         }

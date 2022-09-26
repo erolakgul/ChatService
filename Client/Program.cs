@@ -96,7 +96,7 @@ if (nickNameKey.ToString().Length > 0)
             //System.Threading.Thread.Sleep(1000);
             Console.WriteLine("");
             Console.WriteLine("");
-            Console.WriteLine(" !!! Failed Communication !!! \n \n Communication ID     : {0} \n Nickname             : {1} \n Message id: {2} \n Your Message Content : {3} \n Message Sent Date    : {4} \n Error Reason         : {5} \n Error Count          : {6}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate, errorDto.ErrorReason , errorDto.CountOfError);
+            Console.WriteLine(" !!! Failed Communication !!! \n \n Session ID     : {0} \n Nickname             : {1} \n Message id: {2} \n Your Message Content : {3} \n Message Sent Date    : {4} \n Error Reason         : {5} \n Error Count          : {6}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate, errorDto.ErrorReason , errorDto.CountOfError);
             Console.WriteLine("");
             Console.WriteLine("");
         }
@@ -110,7 +110,7 @@ if (nickNameKey.ToString().Length > 0)
             #endregion
 
             //System.Threading.Thread.Sleep(1000);
-            Console.WriteLine(" Communication ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
+            Console.WriteLine(" Session ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
             Console.WriteLine("");
             Console.WriteLine("");
         }
