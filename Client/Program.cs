@@ -25,20 +25,13 @@ IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
 SocketService socketService = new(iUnitOfWork);
 
 System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
-int portNumber = Convert.ToInt32(connectionSettings.PortNumber);
-
-socketService.Start(new IPEndPoint(ipAddress, portNumber));
+socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
-
-
 
 
 Console.WriteLine();
 Console.WriteLine(" Client started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine();
-
-
-
 
 
 Console.ReadLine();

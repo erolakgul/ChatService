@@ -10,8 +10,9 @@ namespace chatService.startup.Configurations
     {
         private readonly string _fileName = String.Empty;
         public string? IpAddress { get; set; }
-        public string? PortNumber { get; set; }
+        public int PortNumber { get; set; }
         public bool IsActive { get; set; }
+        public int MaxCountQueue { get; set; }
 
         public ConnectionSettings()
         {
@@ -41,7 +42,8 @@ namespace chatService.startup.Configurations
                             {
                                 IpAddress = item.Value.IpAddress,
                                 PortNumber = item.Value.PortNumber,
-                                IsActive = item.Value.IsActive
+                                IsActive = item.Value.IsActive,
+                                MaxCountQueue = item.Value.MaxCountQueue
                             };
                         }
                         Console.WriteLine("");
