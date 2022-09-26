@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 Console.WriteLine("...................Server Application...................");
 Console.WriteLine("");
 #endregion
-
+ 
 #region get dependency injection
 ServiceProvider serviceProvider = new CustomServiceProvider().GetServiceProvider();
 IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
