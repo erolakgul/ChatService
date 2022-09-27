@@ -1,7 +1,9 @@
 ﻿using chatService.core.DTO;
+using chatService.core.Provider;
 using chatService.core.Repositories.Main;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,15 +11,19 @@ namespace chatService.data.Repositories.Main
 {
     public class ListenerRepository : IListenerRepository
     {
-        private readonly Socket _socket;
+        private Socket _socket;
         private int _portNumber;
         private int _maxConnectionQueues;
+        private SocketError _socketError;
 
-        private static string _sessionID = "";
-        public string SessionID { get { return _sessionID; } }
 
-        private static Guid _sessionGUID = Guid.NewGuid();
-        public Guid SessionGUID { get { return _sessionGUID; } }
+        #region creater ID
+        private static string _sessionGlobalID = "";
+        public string GlobalSessionID { get { return _sessionGlobalID; } }
+
+        private static Guid _sessionLocalID = GuidProvider.GetInstance().Id;
+        public Guid LocalSessionID { get { return _sessionLocalID; } }
+        #endregion
 
         public ListenerRepository()
         {
@@ -29,9 +35,11 @@ namespace chatService.data.Repositories.Main
         public void Start(int portNumber, int maxConnectionQueues)
         {
             #region SESSION ID
+#pragma warning disable SYSLIB0021 // Type or member is obsolete
             SHA1 sha = new SHA1CryptoServiceProvider();
+#pragma warning restore SYSLIB0021 // Type or member is obsolete
             string datatoEncrypt = portNumber.ToString();
-            _sessionID = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(datatoEncrypt)));
+            _sessionGlobalID = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(datatoEncrypt)));
             #endregion
 
             //#region SESSION GUID
@@ -55,7 +63,7 @@ namespace chatService.data.Repositories.Main
             {
                 Console.WriteLine("Listener Start Error => " + ex.Message);
             }
-           
+
             #endregion
         }
 
@@ -73,20 +81,63 @@ namespace chatService.data.Repositories.Main
             #endregion
 
             #region continue to listen 
-            _socket.BeginAccept(OnAccepted, null); 
+            _socket.BeginAccept(OnAccepted, null);
             #endregion
-
         }
 
         public void OnMessageReceived(MessageDto messageDto)
         {
-            System.Threading.Thread.Sleep(1000);
-            Console.WriteLine("*****************************" + messageDto.NickName + "*****************************");
-            Console.WriteLine(" Session ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", messageDto.SessionID , messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
-            Console.WriteLine("");
-            Console.WriteLine("");
+            if (messageDto is not null)
+            {
+                try
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    Console.WriteLine("*****************************" + messageDto.NickName + "*****************************");
+                    Console.WriteLine(" G.Session ID         : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", messageDto.GlobalSessionID, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
+                    Console.WriteLine("");
+                    Console.WriteLine("");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("#listener#OnMessageReceived :" + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("#listener#OnMessageReceived : MessageDto is null");
+            }
+
         }
 
-       
+        public async Task CustomSendAsync(MessageDto messageDto)
+        {
+            using (MemoryStream memoryStream = new())
+            {
+                #region convert the format of data which transfered
+                new BinaryFormatter().Serialize(memoryStream, messageDto);
+                List<ArraySegment<byte>> arrSegList = new();
+                arrSegList.Add(new ArraySegment<byte>(memoryStream.ToArray()));
+                #endregion
+
+                #region data tranfer is started
+                _socket.BeginSend(arrSegList, SocketFlags.None, out _socketError, (asyncResult) =>
+                {
+
+                    int sentDataLength = _socket.EndSend(asyncResult, out _socketError);
+                    if (sentDataLength <= 0 || _socketError != SocketError.Success)
+                    {
+                        Console.WriteLine("#LİSTENERCustomSendAsync# There is no data. Connection must be controlled..");
+                        return;
+                    }
+
+                }, null);
+
+                if (_socketError != SocketError.Success)
+                {
+                    Console.WriteLine("#SOCKETREPOTRANSFER# Connection must be controlled..");
+                }
+                #endregion
+            }
+        }
     }
 }

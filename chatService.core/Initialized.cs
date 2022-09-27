@@ -12,6 +12,7 @@ namespace chatService.core
         public Guid ID { get; set; }
         public DateTime CreatedDate { get; set; }
         public string? CreatedBy { get; set; }
-        public Guid SessionID { get; set; }
+        public string? GlobalSessionID { get; set; }
+        public Guid LocalSessionID { get; set; }
     }
 }

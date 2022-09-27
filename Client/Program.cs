@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using chatService.core.DTO;
+﻿using chatService.core.DTO;
 using chatService.core.UOW;
 using chatService.helper.Service.Concretes;
 using chatService.helper.UOW.Interface;
@@ -20,7 +19,7 @@ IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
 ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomHelperUOW<Guid>>();
 #endregion
 
-#region getting json path
+#region getting json path, then read
 ConnectionSettings connectionSettings = new();
 string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
@@ -38,7 +37,6 @@ System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.I
 socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
 
-
 Console.WriteLine();
 Console.WriteLine(" Client started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine();
@@ -52,19 +50,13 @@ MessageService messageService = new MessageService(unitOfWork: iUnitOfWork);
 #endregion
 
 #region get instance for singleton guid with di
-Guid sessionGuid = socketService.SessionGUID;
+Guid sessionGuid = socketService.LocalSessionID;
 CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
 customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
-//Console.WriteLine("LOCALSESSIONGUID" + sessionGuid);
 #endregion
 
-
-#region getting sessionıd
-//Console.WriteLine("GLOBALSESSIONID :" + socketService.SessionID);
-#endregion
 
 #region variables
-//Console.WriteLine("What is your nickname ?");
 string nickNameKey = Console.ReadLine();
 string _content = String.Empty;
 #endregion
@@ -92,7 +84,7 @@ if (nickNameKey.ToString().Length > 0)
 
         #region fill dto and save cache
         messageDto = new MessageDto()
-        { ID = Guid.NewGuid(), SessionID = sessionGuid, Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now };
+        { ID = Guid.NewGuid(), GlobalSessionID = socketService.GlobalSessionID, LocalSessionID = socketService.LocalSessionID, Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now };
 
         messageService.FillMessage(nickNameKey, sessionGuid, messageDto);
         #endregion
@@ -107,7 +99,7 @@ if (nickNameKey.ToString().Length > 0)
         {
             errorCount += errorCount;
 
-            errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, SessionID = messageDto.SessionID, ID = Guid.NewGuid() };
+            errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, GlobalSessionID = messageDto.GlobalSessionID,LocalSessionID = messageDto.LocalSessionID , ID = Guid.NewGuid() };
             errorService.FillError(nickNameKey, sessionGuid, errorDto);
 
             //System.Threading.Thread.Sleep(1000);
@@ -128,7 +120,7 @@ if (nickNameKey.ToString().Length > 0)
             #endregion
 
             //System.Threading.Thread.Sleep(1000);
-            Console.WriteLine(" Session ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
+            Console.WriteLine(" L.Session ID         : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
             Console.WriteLine("");
             Console.WriteLine("");
         }

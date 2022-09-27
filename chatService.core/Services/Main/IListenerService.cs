@@ -1,9 +1,12 @@
-﻿namespace chatService.core.Services.Main
+﻿using chatService.core.DTO;
+
+namespace chatService.core.Services.Main
 {
     public interface IListenerService
     {
-        string SessionID { get; }
-        Guid SessionGUID { get; }
+        string GlobalSessionID { get; }
+        Guid LocalSessionID { get; }
         void Start(int portNumber, int maxConnectionQueues);
+        Task CustomSendFromServer(MessageDto messageDto); // used in server
     }
 }

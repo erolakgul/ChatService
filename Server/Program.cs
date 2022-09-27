@@ -1,4 +1,6 @@
-﻿using chatService.core.UOW;
+﻿using chatService.core.DTO;
+using chatService.core.Provider;
+using chatService.core.UOW;
 using chatService.helper.Service.Concretes;
 using chatService.helper.UOW.Interface;
 using chatService.service.Bussiness.Main;
@@ -17,42 +19,111 @@ IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
 ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomHelperUOW<Guid>>();
 #endregion
 
-#region getting socket service
-SocketService socketService = new(iUnitOfWork);
-#endregion
-
-
-#region getting json path
+#region getting json path, then read
 ConnectionSettings connectionSettings = new();
 string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
+#endregion
+
+#region getting socket service
+SocketService socketService = new(iUnitOfWork);
+//System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
+//socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
+#endregion
+
+#region getting listener service for server
+ListenerService listenerService = new(iUnitOfWork);
+listenerService.Start(Convert.ToInt32(connectionSettings.PortNumber), connectionSettings.MaxCountQueue);
+#endregion
+
+#region message and error dto
+MessageDto messageDto = null;
+ErrorDto errorDto = null;
 #endregion
 
 Console.WriteLine("");
 Console.WriteLine(" Server started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine("");
 
-#region getting listener service for server
-ListenerService listenerService = new(iUnitOfWork);
 
-listenerService.Start(Convert.ToInt32(connectionSettings.PortNumber), connectionSettings.MaxCountQueue);
-#endregion
 
 #region get instance for singleton guid with di
-Guid sessionGuid = GuidProviderService.GetInstance().Id;
+Guid sessionGuid = GuidProvider.GetInstance().Id;
 CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
 customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
-//Console.WriteLine("LOCALSESSIONGUID" + sessionGuid);
 #endregion
 
-#region getting sessionıd
-//Console.WriteLine("GLOBALSESSIONID :" + listenerService.SessionID);
-#endregion
-
-#region info for server
-Console.WriteLine("... Listening is successfuly... \n    IpAddress         : {0} \n    Port No           : {1} \n    Global Session ID : {2} \n    Local  Session ID : {3}", connectionSettings.IpAddress, connectionSettings.PortNumber, listenerService.SessionID, listenerService.SessionGUID);
+#region info for server (socket ten instance alınmayacaksa burası açık kalsın)
+Console.WriteLine("... Listening is successfuly... \n    IpAddress         : {0} \n    Port No           : {1} \n    Global Session ID : {2} \n    Local  Session ID : {3}", connectionSettings.IpAddress, connectionSettings.PortNumber, listenerService.GlobalSessionID, listenerService.LocalSessionID);
 Console.WriteLine("");
 #endregion
+
+
+/*
+#region variables
+Console.WriteLine("What is your nickname ?");
+string nickNameKey = Console.ReadLine();
+string _content = String.Empty;
+#endregion
+
+#region sending message
+
+if (nickNameKey.ToString().Length > 0)
+{
+    Console.WriteLine("....starting to send a new message");
+    Console.WriteLine("");
+
+    int processCount = 0;
+    int errorCount = 0;
+
+    bool isCanBeSentMessage = true;
+
+
+    while (isCanBeSentMessage)
+    {
+        //Console.WriteLine("What is your message ?");
+        _content = Console.ReadLine();
+        if (_content.Length > 0)
+        {
+            Console.WriteLine(""); Console.WriteLine("");
+            Console.WriteLine("your message sending....");
+            Console.WriteLine("");
+
+            #region fill dto and save cache
+            messageDto = new MessageDto()
+            { ID = Guid.NewGuid(), GlobalSessionID = listenerService.GlobalSessionID, LocalSessionID = listenerService.LocalSessionID, Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now };
+
+            //messageService.FillMessage(nickNameKey, sessionGuid, messageDto);
+            #endregion
+
+            try
+            {
+                listenerService.CustomSendAsync(messageDto).Wait();
+                //socketServce.TransferData(messageDto);
+            }
+            catch (ArgumentNullException ane)
+            {
+                Console.WriteLine("#serverprogram# ArgumentNullException : {0}", ane.ToString());
+            }
+            catch (SocketException se)
+            {
+                Console.WriteLine("#serverprogram# SocketException : {0}", se.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("#serverprogram# : {0}", ex.Message);
+            }
+        }
+    }
+}
+#endregion
+
+*/
+
+Console.ReadLine();
+
+
+
 
 /*
 #region get instance for messagedto caching operation
@@ -95,6 +166,3 @@ if (nickNameKey.ToString().Length > 0)
 }
 #endregion
 */
-
-
-Console.ReadLine();

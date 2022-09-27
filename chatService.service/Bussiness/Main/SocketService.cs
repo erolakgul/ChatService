@@ -9,11 +9,13 @@ namespace chatService.service.Bussiness.Main
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        private static string _sessionID = "";
-        public string SessionID { get { return _sessionID; } }
+        #region creater ID
+        private static string _sessionGlobalID = "";
+        public string GlobalSessionID { get { return _sessionGlobalID; } }
 
-        private static Guid _sessionGUID = Guid.Empty;
-        public Guid SessionGUID { get { return _sessionGUID; } }
+        private static Guid _sessionLocalID = Guid.Empty;
+        public Guid LocalSessionID { get { return _sessionLocalID; } } 
+        #endregion
 
         public SocketService(IUnitOfWork unitOfWork)
         {
@@ -26,8 +28,8 @@ namespace chatService.service.Bussiness.Main
 
 
             #region session id and local guid
-            _sessionID = _unitOfWork.SocketRepository.SessionID;
-            _sessionGUID = _unitOfWork.SocketRepository.SessionGUID;
+            _sessionGlobalID = _unitOfWork.SocketRepository.GlobalSessionID;
+            _sessionLocalID = _unitOfWork.SocketRepository.LocalSessionID;
             #endregion
         }
 

@@ -49,20 +49,38 @@ namespace chatService.data.Repositories.Main
             HandleReceivedData(dataBuffer);
 
             // Tekrardan socket üzerinden data dinlemeye başlıyoruz.
-            // Start();
 
             // Socket üzerinden data dinlemeye başlıyoruz.
-            _socket.BeginReceive(_dataBuffer, 0, dataBuffer.Length, SocketFlags.None, OnReceivedCallBack, null);
-
+            _socket.BeginReceive(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, OnReceivedCallBack, null);
         }
 
         public void HandleReceivedData(byte[] resizedOfBuffer)
         {
             if (_onMessageReceived != null)
             {
-                using (MemoryStream memoryStream = new(resizedOfBuffer))
+                using (MemoryStream memoryStream = new(resizedOfBuffer,0, resizedOfBuffer.Length))
                 {
-                    MessageDto messageDto = new BinaryFormatter().Deserialize(memoryStream) as MessageDto;
+                    MessageDto messageDto = null;
+
+                    try
+                    {
+                        //memoryStream.Position = 0; // added end of parse problem
+                        //memoryStream.Seek(0, SeekOrigin.Begin);
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
+                        messageDto = (MessageDto) new BinaryFormatter().Deserialize(memoryStream);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("#clienthandlereceiveddata# :" + ex.Message);
+                    }
+                    finally
+                    {
+                        memoryStream.Close();
+                        memoryStream.Flush();
+                        memoryStream.Dispose();
+                    }
+                    
                     _onMessageReceived(messageDto);
                 }
             }

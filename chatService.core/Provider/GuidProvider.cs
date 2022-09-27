@@ -1,22 +1,22 @@
-﻿namespace chatService.service.Bussiness.Main
+﻿namespace chatService.core.Provider
 {
-    public class GuidProviderService
+    public class GuidProvider
     {
-        private static GuidProviderService _instance;
+        private static GuidProvider _instance;
 
         private static Guid _id = Guid.NewGuid(); 
         public Guid Id { get { return _id ; } }
 
         //singleton sınıfına ait sınıfın çalışma zamanında constructordan yararlanarak oluşturulmamamasını sağlar
-        private GuidProviderService()
+        private GuidProvider()
         {
 
         }
 
-        public static GuidProviderService GetInstance()
+        public static GuidProvider GetInstance()
         {
             if (_instance == null)
-                _instance = new GuidProviderService();
+                _instance = new GuidProvider();
 
             return _instance;
         }
