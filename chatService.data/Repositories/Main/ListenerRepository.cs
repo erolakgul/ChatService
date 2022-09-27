@@ -2,6 +2,8 @@
 using chatService.core.Repositories.Main;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace chatService.data.Repositories.Main
 {
@@ -10,6 +12,12 @@ namespace chatService.data.Repositories.Main
         private readonly Socket _socket;
         private int _portNumber;
         private int _maxConnectionQueues;
+
+        private static string _sessionID = "";
+        public string SessionID { get { return _sessionID; } }
+
+        private static Guid _sessionGUID = Guid.NewGuid();
+        public Guid SessionGUID { get { return _sessionGUID; } }
 
         public ListenerRepository()
         {
@@ -20,6 +28,16 @@ namespace chatService.data.Repositories.Main
 
         public void Start(int portNumber, int maxConnectionQueues)
         {
+            #region SESSION ID
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            string datatoEncrypt = portNumber.ToString();
+            _sessionID = Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(datatoEncrypt)));
+            #endregion
+
+            //#region SESSION GUID
+            //_sessionGUID = Guid.NewGuid();
+            //#endregion
+
             _portNumber = portNumber;
             _maxConnectionQueues = maxConnectionQueues;
 

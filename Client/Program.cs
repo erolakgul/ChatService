@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using chatService.core.DTO;
 using chatService.core.UOW;
+using chatService.helper.Service.Concretes;
+using chatService.helper.UOW.Interface;
 using chatService.service.Bussiness.Basis;
 using chatService.service.Bussiness.Main;
 using chatService.startup.Configurations;
@@ -10,6 +12,12 @@ using System.Net;
 
 #region app environment
 Console.WriteLine("...................Client Application...................");
+#endregion
+
+#region get dependency injection instance
+ServiceProvider serviceProvider = CustomServiceProvider.GetInstance().serviceProvider;
+IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
+ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomHelperUOW<Guid>>();
 #endregion
 
 #region getting json path
@@ -23,12 +31,7 @@ MessageDto messageDto = null;
 ErrorDto errorDto = null;
 #endregion
 
-#region get dependency injection instance
-ServiceProvider serviceProvider = new CustomServiceProvider().GetServiceProvider();
-IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
-#endregion
-
-#region getting socket service
+#region getting socket service for client
 SocketService socketService = new(iUnitOfWork);
 
 System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
@@ -49,7 +52,15 @@ MessageService messageService = new MessageService(unitOfWork: iUnitOfWork);
 #endregion
 
 #region get instance for singleton guid with di
-Guid sessionGuid = GuidGenerator.GetInstance().Id;
+Guid sessionGuid = socketService.SessionGUID;
+CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
+customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
+//Console.WriteLine("LOCALSESSIONGUID" + sessionGuid);
+#endregion
+
+
+#region getting sessionıd
+//Console.WriteLine("GLOBALSESSIONID :" + socketService.SessionID);
 #endregion
 
 #region variables

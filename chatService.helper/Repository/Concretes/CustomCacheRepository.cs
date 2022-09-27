@@ -40,7 +40,12 @@ namespace chatService.helper.Repository.Concretes
                 return _memoryCache.Get(key);
             }
 
-            return key;
+            //if (key.ToString().Contains("GUID") && value is null)
+            //{
+            //    return Guid.NewGuid();
+            //}
+
+            return null;
         }
 
         public void Remove(object key)

@@ -1,17 +1,26 @@
 ﻿using chatService.core.UOW;
+using chatService.helper.Service.Concretes;
+using chatService.helper.UOW.Interface;
 using chatService.service.Bussiness.Main;
 using chatService.startup.Configurations;
 using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
 
+//System.Threading.Thread.Sleep(3000);
 #region app environment
 Console.WriteLine("...................Server Application...................");
 #endregion
- 
-#region get dependency injection
-ServiceProvider serviceProvider = new CustomServiceProvider().GetServiceProvider();
+
+#region get dependency injection instance
+ServiceProvider serviceProvider = CustomServiceProvider.GetInstance().serviceProvider;
 IUnitOfWork iUnitOfWork = serviceProvider.GetService<IUnitOfWork>();
+ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomHelperUOW<Guid>>();
 #endregion
+
+#region getting socket service
+SocketService socketService = new(iUnitOfWork);
+#endregion
+
 
 #region getting json path
 ConnectionSettings connectionSettings = new();
@@ -23,12 +32,27 @@ Console.WriteLine("");
 Console.WriteLine(" Server started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
 Console.WriteLine("");
 
-#region getting listener service
+#region getting listener service for server
 ListenerService listenerService = new(iUnitOfWork);
 
 listenerService.Start(Convert.ToInt32(connectionSettings.PortNumber), connectionSettings.MaxCountQueue);
 #endregion
 
+#region get instance for singleton guid with di
+Guid sessionGuid = GuidProviderService.GetInstance().Id;
+CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
+customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
+//Console.WriteLine("LOCALSESSIONGUID" + sessionGuid);
+#endregion
+
+#region getting sessionıd
+//Console.WriteLine("GLOBALSESSIONID :" + listenerService.SessionID);
+#endregion
+
+#region info for server
+Console.WriteLine("... Listening is successfuly... \n    IpAddress         : {0} \n    Port No           : {1} \n    Global Session ID : {2} \n    Local  Session ID : {3}", connectionSettings.IpAddress, connectionSettings.PortNumber, listenerService.SessionID, listenerService.SessionGUID);
+Console.WriteLine("");
+#endregion
 
 /*
 #region get instance for messagedto caching operation
