@@ -1,5 +1,6 @@
 ﻿using chatService.core.DTO;
 using System.Net;
+using System.Net.Sockets;
 
 namespace chatService.core.Services.Main
 {
@@ -9,5 +10,6 @@ namespace chatService.core.Services.Main
         Guid LocalSessionID { get; }
         void Start(IPEndPoint ipEndPoint);
         void TransferData(MessageDto messageDto);
+        void OnShutDown(SocketShutdown socketShutdown);
     }
 }

@@ -99,14 +99,13 @@ namespace chatService.data.Repositories.Main
         /// <param name="messageDto"></param>
         public void OnMessageReceived(MessageDto messageDto)
         {
-            //#region get instance for messagedto caching service
-            //MessageRepository messageRepo = new MessageRepository(unitOfWork: iUnitOfWork);
-            //#endregion
+            #region get instance for messagedto caching service
+            MessageRepository messageRepo = new MessageRepository(new helper.UOW.Concrete.CustomHelperUOW<List<MessageDto>>());
+            #endregion
 
-            //#region getting last message for user
-            //List<MessageDto> messageDtoCacheList = (List<MessageDto>) messageRepo.GetDto(messageDto.NickName, messageDto.LocalSessionID);
-            //#endregion
-
+            #region getting last message for user
+            List<MessageDto> messageDtoCacheList = (List<MessageDto>)messageRepo.GetDto(messageDto.NickName, messageDto.LocalSessionID);
+            #endregion
 
             if (messageDto is not null)
             {

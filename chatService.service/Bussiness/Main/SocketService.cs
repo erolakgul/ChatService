@@ -2,6 +2,7 @@
 using chatService.core.Services.Main;
 using chatService.core.UOW;
 using System.Net;
+using System.Net.Sockets;
 
 namespace chatService.service.Bussiness.Main
 {
@@ -36,6 +37,11 @@ namespace chatService.service.Bussiness.Main
         public void TransferData(MessageDto messageDto)
         {
            _unitOfWork.SocketRepository.TransferData(messageDto);
+        }
+
+        public void OnShutDown(SocketShutdown socketShutdown)
+        {
+            _unitOfWork.SocketRepository.OnShutDown(socketShutdown);
         }
     }
 }

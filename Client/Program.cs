@@ -68,6 +68,8 @@ if (nickNameKey.ToString().Length > 0)
 
     int processCount = 0;
     int errorCount = 0;
+    int warnCount = 0;  // one second more then one message state
+    DateTime _lastSentDateTime = DateTime.Now;
 
     bool isCanBeSentMessage = true;
 
@@ -97,6 +99,47 @@ if (nickNameKey.ToString().Length > 0)
             {
                 processCount += processCount;
                 socketService.TransferData(messageDto);
+
+                #region control for more then one message in seconds
+                if (processCount == 1)
+                {
+                    _lastSentDateTime = messageDto.CreatedDate;
+                }
+                else
+                {
+                    if (_lastSentDateTime != messageDto.CreatedDate)
+                    {
+                        double diffInSeconds = (messageDto.CreatedDate - _lastSentDateTime).TotalSeconds;
+
+                        if (diffInSeconds <= 1)
+                        {
+                            warnCount++;
+                        }
+
+                        if (warnCount == 1)
+                        {
+                            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            Console.WriteLine("");
+                            Console.WriteLine("#clientAnatolia_program# error sending more then one message in seconds. WARNING MESSAGE =>" + warnCount);
+                            Console.WriteLine("");
+                            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        }
+                        else if (warnCount == 2)
+                        {
+                            isCanBeSentMessage = false;
+                            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            Console.WriteLine("");
+                            Console.WriteLine("#clientAnatolia_program# error sending more then one message in seconds. WARNING MESSAGE =>" + warnCount + " ##Connection will closed");
+                            Console.WriteLine("");
+                            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            
+                            socketService.OnShutDown(System.Net.Sockets.SocketShutdown.Both);
+                        }
+                        _lastSentDateTime = messageDto.CreatedDate;
+                    }
+                }
+                #endregion
+
 
                 #region if message sending is success , save the cache
 

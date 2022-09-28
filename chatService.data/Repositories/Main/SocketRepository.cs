@@ -135,5 +135,18 @@ namespace chatService.data.Repositories.Main
             _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.None, OnReceived, null);
             #endregion
         }
+
+        public void OnShutDown(SocketShutdown socketShutdown)
+        {
+            _socket.Shutdown(socketShutdown);
+
+            Console.WriteLine("****************************************************************************");
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("#Socket_OnShutDown# Connection Closed...");
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("****************************************************************************");
+        }
     }
 }

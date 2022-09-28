@@ -1,5 +1,6 @@
 ﻿using chatService.core.DTO;
 using System.Net;
+using System.Net.Sockets;
 
 namespace chatService.core.Repositories.Main
 {
@@ -11,5 +12,6 @@ namespace chatService.core.Repositories.Main
         void TransferData(MessageDto messageDto);
         void OnConnected(IAsyncResult asyncResult);
         void OnReceived(IAsyncResult asyncResult);
+        void OnShutDown(SocketShutdown socketShutdown);
     }
 }
