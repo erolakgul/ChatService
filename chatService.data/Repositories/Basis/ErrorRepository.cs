@@ -7,16 +7,16 @@ namespace chatService.data.Repositories.Basis
     /// <summary>
     /// repository for error dto
     /// </summary>
-    public class ErrorRepository : Repository<ErrorDto>, IErrorRepository
+    public class ErrorRepository : Repository<List<ErrorDto>>, IErrorRepository
     {
-        public ErrorRepository(CustomHelperUOW<ErrorDto> context) : base(context)
+        public ErrorRepository(CustomHelperUOW<List<ErrorDto>> context) : base(context)
         {
         }
 
         // read and write will be processed on cache
-        private CustomHelperUOW<ErrorDto> Context
+        private CustomHelperUOW<List<ErrorDto>> Context
         {
-            get { return _context as CustomHelperUOW<ErrorDto>; }
+            get { return _context as CustomHelperUOW<List<ErrorDto>>; }
         }
 
         /// <summary>

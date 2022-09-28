@@ -14,7 +14,7 @@ namespace chatService.core.Services.Basis
         /// <param name="guid"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        ErrorDto FillError(object key, Guid guid, ErrorDto entity);
+        void AddErrorList(object key, Guid guid, List<ErrorDto> entitİES);
 
         /// <summary>
         /// removing method for error repository
@@ -22,6 +22,6 @@ namespace chatService.core.Services.Basis
         /// <param name="key"></param>
         /// <param name="guid"></param>
         void RemoveError(object key, Guid guid);
-        ErrorDto GetError(object key, Guid guid);
+        List<ErrorDto> GetErrorList(object key, Guid guid);
     }
 }

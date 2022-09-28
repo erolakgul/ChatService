@@ -5,7 +5,7 @@ namespace chatService.core.Repositories.Basis
     /// <summary>
     /// interface for message dto
     /// </summary>
-    public interface IMessageRepository : IRepository<MessageDto>
+    public interface IMessageRepository : IRepository<List<MessageDto>>
     {
         /// <summary>
         /// repository specific method
@@ -13,5 +13,8 @@ namespace chatService.core.Repositories.Basis
         /// <param name="key"></param>
         /// <returns></returns>
         List<MessageDto> GetTestMessages(object key);
+        //List<MessageDto> GetMessages(object key, Guid guid);
+        //void AddDtoList(object key, Guid guid,List<MessageDto> messageDtos);
+
     }
 }

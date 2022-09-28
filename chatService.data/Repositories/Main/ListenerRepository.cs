@@ -1,6 +1,7 @@
 ﻿using chatService.core.DTO;
 using chatService.core.Provider;
 using chatService.core.Repositories.Main;
+using chatService.data.Repositories.Basis;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -98,11 +99,20 @@ namespace chatService.data.Repositories.Main
         /// <param name="messageDto"></param>
         public void OnMessageReceived(MessageDto messageDto)
         {
+            //#region get instance for messagedto caching service
+            //MessageRepository messageRepo = new MessageRepository(unitOfWork: iUnitOfWork);
+            //#endregion
+
+            //#region getting last message for user
+            //List<MessageDto> messageDtoCacheList = (List<MessageDto>) messageRepo.GetDto(messageDto.NickName, messageDto.LocalSessionID);
+            //#endregion
+
+
             if (messageDto is not null)
             {
                 try
                 {
-                    System.Threading.Thread.Sleep(1000);
+                    //System.Threading.Thread.Sleep(1000);
                     Console.WriteLine("*****************************" + messageDto.NickName + "*****************************");
                     Console.WriteLine(" #Listener_OnMessageReceived# \n G.Session ID         : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", messageDto.GlobalSessionID, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
                     Console.WriteLine("");

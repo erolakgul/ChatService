@@ -14,7 +14,9 @@ namespace chatService.core.Services.Basis
         /// <param name="guid"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        MessageDto FillMessage(object key, Guid guid, MessageDto entity);
+        //List<MessageDto> FillCollectionForMessage(object key, Guid guid, List<MessageDto> entities);
+        void AddMessageList(object key, Guid guid,List<MessageDto> messageDtos);
+        List<MessageDto> GetMessageList(object key, Guid guid);
 
         /// <summary>
         /// removing method for message repository
@@ -23,6 +25,5 @@ namespace chatService.core.Services.Basis
         /// <param name="guid"></param>
         void RemoveMessage(object key, Guid guid);
 
-        MessageDto GetMessage(object key,Guid guid);
     }
 }

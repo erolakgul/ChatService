@@ -33,13 +33,14 @@ Console.WriteLine();
 #region variables
 MessageDto messageDto = null;
 ErrorDto errorDto = null;
-string nickNameKey = Console.ReadLine();
 string _content = String.Empty;
+List<MessageDto> messageDtosForCaching = new List<MessageDto>();
+List<ErrorDto> errorDtosForCaching = new List<ErrorDto>();
 #endregion
 
 #region getting socket service for client
 SocketService socketService = new(iUnitOfWork);
-IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
+System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
 socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
 
@@ -56,6 +57,9 @@ CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
 customCacheService.SetMemoryCache("LOCALSESSIONGUID", socketService.LocalSessionID);
 #endregion
 
+#region read nickname
+string nickNameKey = Console.ReadLine();
+#endregion
 #region communication operation
 if (nickNameKey.ToString().Length > 0)
 {
@@ -69,8 +73,14 @@ if (nickNameKey.ToString().Length > 0)
 
     while (isCanBeSentMessage)
     {
+        #region listing the saved messages
+        List<MessageDto> cahceMessageList = messageService.GetMessageList(nickNameKey, socketService.LocalSessionID);
+        List<ErrorDto> cahceErrorList = errorService.GetErrorList(nickNameKey, socketService.LocalSessionID);
+        #endregion
+
         //Console.WriteLine("What is your message ?");
         _content = Console.ReadLine();
+
 
         if (_content.Length > 0)
         {
@@ -89,7 +99,19 @@ if (nickNameKey.ToString().Length > 0)
                 socketService.TransferData(messageDto);
 
                 #region if message sending is success , save the cache
-                messageService.FillMessage(nickNameKey, socketService.LocalSessionID, messageDto);
+
+                if (cahceMessageList is null)
+                {
+                    messageDtosForCaching.Add(messageDto);
+                    cahceMessageList = new List<MessageDto>();
+                    cahceMessageList.AddRange(messageDtosForCaching);
+                }
+                else
+                {
+                    cahceMessageList.Add(messageDto);
+                }
+
+                messageService.AddMessageList(nickNameKey, socketService.LocalSessionID, cahceMessageList);
                 #endregion
             }
             catch (Exception ex)
@@ -97,7 +119,27 @@ if (nickNameKey.ToString().Length > 0)
                 errorCount += errorCount;
 
                 errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, GlobalSessionID = messageDto.GlobalSessionID, LocalSessionID = messageDto.LocalSessionID, ID = Guid.NewGuid() };
-                errorService.FillError(nickNameKey, socketService.LocalSessionID, errorDto);
+
+
+                #region if message sending is failed , save the error cache
+
+                if (cahceMessageList is null)
+                {
+                    errorDtosForCaching.Add(errorDto);
+                    cahceErrorList = new List<ErrorDto>();
+                    cahceErrorList.AddRange(errorDtosForCaching);
+                }
+                else
+                {
+                    cahceErrorList.Add(errorDto);
+                }
+
+                errorService.AddErrorList(nickNameKey, socketService.LocalSessionID, cahceErrorList);
+                #endregion
+
+                #region  list on service
+                List<ErrorDto> errorDtoList = errorService.GetErrorList(nickNameKey, socketService.LocalSessionID);
+                #endregion
 
                 //System.Threading.Thread.Sleep(1000);
                 Console.WriteLine("");
@@ -113,7 +155,7 @@ if (nickNameKey.ToString().Length > 0)
             if (errorCount == 0)
             {
                 #region on service
-                messageDto = messageService.GetMessage(nickNameKey, socketService.LocalSessionID);
+                List<MessageDto> messageDtoList = messageService.GetMessageList(nickNameKey, socketService.LocalSessionID);
                 #endregion
 
                 //System.Threading.Thread.Sleep(1000);

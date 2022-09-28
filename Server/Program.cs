@@ -34,9 +34,9 @@ Console.WriteLine(" Server started => " + connectionSettings.IpAddress + " " + c
 Console.WriteLine("");
 
 #region getting socket service
-SocketService socketService = new(iUnitOfWork);
-System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
-socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
+//SocketService socketService = new(iUnitOfWork);
+//System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
+//socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
 
 #region getting listener service for server
@@ -46,13 +46,15 @@ listenerService.Start(Convert.ToInt32(connectionSettings.PortNumber), connection
 
 #region get instance for messagedto caching service
 MessageService messageService = new MessageService(unitOfWork: iUnitOfWork);
+ErrorService errorService = new ErrorService(unitOfWork: iUnitOfWork);
 #endregion
 
 #region variables
 MessageDto messageDto = null;
 ErrorDto errorDto = null;
-string nickNameKey = Console.ReadLine();
 string _content = String.Empty;
+List<MessageDto> messageDtosForCaching = new List<MessageDto>();
+List<ErrorDto> errorDtosForCaching = new List<ErrorDto>();
 #endregion
 
 #region get instance for singleton guid with di
@@ -61,10 +63,15 @@ CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
 customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
 #endregion
 
-//#region info for server (socket ten instance alınmayacaksa burası açık kalsın)
-//Console.WriteLine("... Listening is successfuly... \n    IpAddress         : {0} \n    Port No           : {1} \n    Global Session ID : {2} \n    Local  Session ID : {3}", connectionSettings.IpAddress, connectionSettings.PortNumber, listenerService.GlobalSessionID, listenerService.LocalSessionID);
-//Console.WriteLine("");
-//#endregion
+#region info for server (socket ten instance alınmayacaksa burası açık kalsın)
+Console.WriteLine("... Listening is successfuly... \n    IpAddress         : {0} \n    Port No           : {1} \n    Global Session ID : {2} \n    Local  Session ID : {3}", connectionSettings.IpAddress, connectionSettings.PortNumber, listenerService.GlobalSessionID, listenerService.LocalSessionID);
+Console.WriteLine("");
+#endregion
+
+Console.WriteLine("What is your message ?");
+#region read nickname
+string nickNameKey = Console.ReadLine();
+#endregion
 
 #region communication operation
 if (nickNameKey.ToString().Length > 0)
@@ -77,9 +84,13 @@ if (nickNameKey.ToString().Length > 0)
 
     bool isCanBeSentMessage = true;
 
-
     while (isCanBeSentMessage)
     {
+        #region listing the saved messages
+        List<MessageDto> cahceMessageList = messageService.GetMessageList(nickNameKey, listenerService.LocalSessionID);
+        List<ErrorDto> cahceErrorList = errorService.GetErrorList(nickNameKey, listenerService.LocalSessionID);
+        #endregion
+
         //Console.WriteLine("What is your message ?");
         _content = Console.ReadLine();
         if (_content.Length > 0)
@@ -97,7 +108,19 @@ if (nickNameKey.ToString().Length > 0)
                 listenerService.CustomSendFromServer(messageDto).Wait();
 
                 #region if message sending is success , save the cache
-                messageService.FillMessage(nickNameKey, sessionGuid, messageDto); 
+
+                if (cahceMessageList is null)
+                {
+                    messageDtosForCaching.Add(messageDto);
+                    cahceMessageList = new List<MessageDto>();
+                    cahceMessageList.AddRange(messageDtosForCaching);
+                }
+                else
+                {
+                    cahceMessageList.Add(messageDto);
+                }
+
+                messageService.AddMessageList(nickNameKey, listenerService.LocalSessionID, cahceMessageList);
                 #endregion
             }
             catch (ArgumentNullException ane)
@@ -111,6 +134,38 @@ if (nickNameKey.ToString().Length > 0)
             catch (Exception ex)
             {
                 Console.WriteLine("#server_program# : {0}", ex.Message);
+
+                errorCount += errorCount;
+
+                errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, GlobalSessionID = messageDto.GlobalSessionID, LocalSessionID = messageDto.LocalSessionID, ID = Guid.NewGuid() };
+
+                #region if message sending is failed , save the error cache
+
+                if (cahceMessageList is null)
+                {
+                    errorDtosForCaching.Add(errorDto);
+                    cahceErrorList = new List<ErrorDto>();
+                    cahceErrorList.AddRange(errorDtosForCaching);
+                }
+                else
+                {
+                    cahceErrorList.Add(errorDto);
+                }
+
+                errorService.AddErrorList(nickNameKey, listenerService.LocalSessionID, cahceErrorList);
+                #endregion
+
+                #region  list on service
+                List<ErrorDto> errorDtoList = errorService.GetErrorList(nickNameKey, listenerService.LocalSessionID);
+                #endregion
+
+                //System.Threading.Thread.Sleep(1000);
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine(" !!! #server_program# Failed Communication !!! \n \n Session ID     : {0} \n Nickname             : {1} \n Message id: {2} \n Your Message Content : {3} \n Message Sent Date    : {4} \n Error Reason         : {5} \n Error Count          : {6}", listenerService.LocalSessionID, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate, errorDto.ErrorReason, errorDto.CountOfError);
+                Console.WriteLine("");
+                Console.WriteLine("");
+                isCanBeSentMessage = false;
             }
         }
     }

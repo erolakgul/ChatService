@@ -17,7 +17,6 @@ namespace chatService.data.Repositories.Main
     /// </summary>
     public class SocketRepository : ISocketRepository
     {
-        public OnMessageReceived _onMessageReceived;
         private Socket _socket;
         private IPEndPoint _ipEndPoint;
         private SocketError _socketError;

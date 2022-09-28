@@ -7,17 +7,30 @@ namespace chatService.data.Repositories.Basis
     /// <summary>
     /// repository for message dto
     /// </summary>
-    public class MessageRepository : Repository<MessageDto>, IMessageRepository
+    public class MessageRepository : Repository<List<MessageDto>>, IMessageRepository
     {
-        public MessageRepository(CustomHelperUOW<MessageDto> context) : base(context)
+        public MessageRepository(CustomHelperUOW<List<MessageDto>> context) : base(context)
         {
         }
 
         // read and write will be processed on cache
-        private CustomHelperUOW<MessageDto> Context
+        private CustomHelperUOW<List<MessageDto>> Context
         {
-            get { return _context as CustomHelperUOW<MessageDto>; }
+            get { return _context as CustomHelperUOW<List<MessageDto>>; }
         }
+
+        //public void AddDtoList(object key, Guid guid, List<MessageDto> messageDtos)
+        //{
+        //    Context.customCacheRepositoryUOW.Set(key, messageDtos);
+        //}
+
+        //public List<MessageDto> GetMessages(object key, Guid guid)
+        //{
+        //    if (guid != Guid.Empty) key += guid.ToString();
+        //    List<MessageDto> data = (List<MessageDto>)Context.customCacheRepositoryUOW.Get(key);
+        //    return data;    
+        //}
+
         /// <summary>
         /// repository specific test method 
         /// </summary>

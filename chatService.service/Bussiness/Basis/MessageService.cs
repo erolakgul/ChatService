@@ -12,15 +12,14 @@ namespace chatService.service.Bussiness.Basis
             _unitOfWork = unitOfWork;
         }
 
-        public MessageDto FillMessage(object key, Guid guid, MessageDto entity)
+        public void AddMessageList(object key, Guid guid, List<MessageDto> messageDtos)
         {
-            _unitOfWork.MessageRepository.AddDto(key, guid, entity);
-            return entity;
+            _unitOfWork.MessageRepository.AddDto(key, guid, messageDtos);
         }
 
-        public MessageDto GetMessage(object key, Guid guid)
+        public List<MessageDto> GetMessageList(object key, Guid guid)
         {
-            return _unitOfWork.MessageRepository.GetDto(key, guid);    
+           return _unitOfWork.MessageRepository.GetDto(key, guid);
         }
 
         public void RemoveMessage(object key, Guid guid)

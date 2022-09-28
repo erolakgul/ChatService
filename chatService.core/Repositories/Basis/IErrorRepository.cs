@@ -5,7 +5,7 @@ namespace chatService.core.Repositories.Basis
     /// <summary>
     /// interface for error dto
     /// </summary>
-    public interface IErrorRepository : IRepository<ErrorDto>
+    public interface IErrorRepository : IRepository<List<ErrorDto>>
     {
         /// <summary>
         /// repository specific test method 

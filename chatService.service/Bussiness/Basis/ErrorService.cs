@@ -11,20 +11,17 @@ namespace chatService.service.Bussiness.Basis
         {
             _unitOfWork = unitOfWork;
         }
-        public ErrorDto FillError(object key, Guid guid, ErrorDto entity)
+        public void AddErrorList(object key, Guid guid, List<ErrorDto> entity)
         {
             _unitOfWork.ErrorRepository.AddDto(key, guid, entity);
-            return entity;
         }
-
-        public ErrorDto GetError(object key, Guid guid)
-        {
-            return _unitOfWork.ErrorRepository.GetDto(key, guid);
-        }
-
         public void RemoveError(object key, Guid guid)
         {
             _unitOfWork.ErrorRepository.RemoveDto(key, guid);  
+        }
+        public List<ErrorDto> GetErrorList(object key, Guid guid)
+        {
+            return _unitOfWork.ErrorRepository.GetDto(key, guid);
         }
     }
 }
