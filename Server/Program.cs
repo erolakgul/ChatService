@@ -8,8 +8,9 @@ using chatService.service.Bussiness.Main;
 using chatService.startup.Configurations;
 using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 using System.Net.Sockets;
+
+
 
 //System.Threading.Thread.Sleep(3000);
 #region app environment

@@ -8,6 +8,9 @@ using chatService.startup.Configurations;
 using chatService.startup.Provider;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+//using System.Runtime.CompilerServices;
+
+//[assembly: InternalsVisibleTo("UnitTestChatService")]
 
 #region app environment
 Console.WriteLine(".................................Client Application................................");

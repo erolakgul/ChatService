@@ -1,14 +1,30 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using chatService.startup.Configurations;
+using NUnit.Framework;
 
 namespace UnitTestChatService
 {
-    [TestClass]
+    [TestFixture]
     public class ClientTests
     {
-        [TestMethod]
-        public void TestMethod1()
+        [Test]
+        public void Check_Client_ConnectionIP_IsActýve_WhenExecuted()
         {
+            #region  Arrange
+            ConnectionSettings connectionSettings = new();
+            #endregion
 
+            #region act
+            string filePath = connectionSettings.GetLibraryPath();
+            connectionSettings = connectionSettings.ReadJsonFile(filePath);
+            bool response = connectionSettings.IsActive;
+            #endregion
+
+            #region assert
+            Assert.AreEqual(response, true); 
+            Assert.AreNotSame(connectionSettings.PortNumber, connectionSettings.MaxCountQueue);
+            #endregion
         }
+
+
     }
 }
