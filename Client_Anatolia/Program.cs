@@ -1,5 +1,4 @@
 ﻿using chatService.core.DTO;
-using chatService.core.Provider;
 using chatService.core.UOW;
 using chatService.helper.Service.Concretes;
 using chatService.helper.UOW.Interface;
@@ -12,7 +11,8 @@ using System.Net;
 
 //System.Threading.Thread.Sleep(3000);
 #region app environment
-Console.WriteLine("...................Client Anatolia Application...................");
+Console.WriteLine("...........................Client Anatolia Application.............................");
+Console.WriteLine("");
 #endregion
 
 #region get dependency injection instance
@@ -27,21 +27,23 @@ string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
 #endregion
 
-#region message and error dto
+Console.WriteLine();
+Console.WriteLine(" Client Anatolia started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber + "          " + DateTime.Now);
+Console.WriteLine();
+
+#region variables
 MessageDto messageDto = null;
 ErrorDto errorDto = null;
+string nickNameKey = Console.ReadLine();
+string _content = String.Empty;
 #endregion
 
 #region getting socket service  for client
 SocketService socketService = new(iUnitOfWork);
 
-System.Net.IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
+IPAddress ipAddress = System.Net.IPAddress.Parse(connectionSettings.IpAddress);
 socketService.Start(new IPEndPoint(ipAddress, connectionSettings.PortNumber));
 #endregion
-
-Console.WriteLine();
-Console.WriteLine(" Client Anatolia started => " + connectionSettings.IpAddress + " " + connectionSettings.PortNumber);
-Console.WriteLine();
 
 #region get instance for errordto caching service
 ErrorService errorService = new ErrorService(unitOfWork: iUnitOfWork);
@@ -52,22 +54,9 @@ MessageService messageService = new MessageService(unitOfWork: iUnitOfWork);
 #endregion
 
 #region get instance for singleton guid with di
-Guid sessionGuid = GuidProvider.GetInstance().Id;
 CustomCacheService<Guid> customCacheService = new(customHelperGuidUOW);
-customCacheService.SetMemoryCache("LOCALSESSIONGUID", sessionGuid);
-//Console.WriteLine("LOCALSESSIONGUID" + sessionGuid);
+customCacheService.SetMemoryCache("LOCALSESSIONGUID", socketService.LocalSessionID);
 #endregion
-
-#region getting sessionıd
-//Console.WriteLine("GLOBALSESSIONID :" + socketService.SessionID);
-#endregion
-
-#region variables
-//Console.WriteLine("What is your nickname ?");
-string nickNameKey = Console.ReadLine();
-string _content = String.Empty;
-#endregion
-
 
 #region communication operation
 if (nickNameKey.ToString().Length > 0)
@@ -84,54 +73,57 @@ if (nickNameKey.ToString().Length > 0)
     {
         //Console.WriteLine("What is your message ?");
         _content = Console.ReadLine();
+
         if (_content.Length > 0)
         {
-            Console.WriteLine(".."); Console.WriteLine("...");
-            Console.WriteLine("your message sending....");
-            Console.WriteLine("");
-        }
-
-        #region fill dto and save cache
-        messageDto = new MessageDto()
-        { ID = Guid.NewGuid(), GlobalSessionID = socketService.GlobalSessionID, LocalSessionID = socketService.LocalSessionID, Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now };
-
-        messageService.FillMessage(nickNameKey, sessionGuid, messageDto);
-        #endregion
-
-        #region chat service with socket
-        try
-        {
-            processCount += processCount;
-            socketService.TransferData(messageDto);
-        }
-        catch (Exception ex)
-        {
-            errorCount += errorCount;
-
-            errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, GlobalSessionID = messageDto.GlobalSessionID, LocalSessionID = messageDto.LocalSessionID, ID = Guid.NewGuid() };
-            errorService.FillError(nickNameKey, sessionGuid, errorDto);
-
-            //System.Threading.Thread.Sleep(1000);
             Console.WriteLine("");
             Console.WriteLine("");
-            Console.WriteLine(" !!! Failed Communication !!! \n \n Session ID     : {0} \n Nickname             : {1} \n Message id: {2} \n Your Message Content : {3} \n Message Sent Date    : {4} \n Error Reason         : {5} \n Error Count          : {6}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate, errorDto.ErrorReason, errorDto.CountOfError);
-            Console.WriteLine("");
-            Console.WriteLine("");
-            isCanBeSentMessage = false;
-        }
 
-        #endregion
-
-        if (errorCount == 0)
-        {
-            #region on service
-            messageDto = messageService.GetMessage(nickNameKey, sessionGuid);
+            #region fill dto
+            messageDto = new MessageDto()
+            { ID = Guid.NewGuid(), GlobalSessionID = socketService.GlobalSessionID, LocalSessionID = socketService.LocalSessionID, Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now };
             #endregion
 
-            //System.Threading.Thread.Sleep(1000);
-            Console.WriteLine(" Session ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
-            Console.WriteLine("");
-            Console.WriteLine("");
+            #region sending message from Client Anatolia to server
+            try
+            {
+                processCount += processCount;
+                socketService.TransferData(messageDto);
+
+                #region if message sending is success , save the cache
+                messageService.FillMessage(nickNameKey, socketService.LocalSessionID, messageDto);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                errorCount += errorCount;
+
+                errorDto = new() { CountOfError = errorCount, CreatedBy = messageDto.NickName, CreatedDate = System.DateTime.Now, ErrorCode = ex.Source, ErrorReason = ex.Message, GlobalSessionID = messageDto.GlobalSessionID, LocalSessionID = messageDto.LocalSessionID, ID = Guid.NewGuid() };
+                errorService.FillError(nickNameKey, socketService.LocalSessionID, errorDto);
+
+                //System.Threading.Thread.Sleep(1000);
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine(" !!! #clientAnatolia_program# Failed Communication !!! \n \n Session ID     : {0} \n Nickname             : {1} \n Message id: {2} \n Your Message Content : {3} \n Message Sent Date    : {4} \n Error Reason         : {5} \n Error Count          : {6}", socketService.LocalSessionID, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate, errorDto.ErrorReason, errorDto.CountOfError);
+                Console.WriteLine("");
+                Console.WriteLine("");
+                isCanBeSentMessage = false;
+            }
+
+            #endregion
+
+            if (errorCount == 0)
+            {
+                #region on service
+                messageDto = messageService.GetMessage(nickNameKey, socketService.LocalSessionID);
+                #endregion
+
+                //System.Threading.Thread.Sleep(1000);
+                Console.WriteLine("  #clientAnatolia_program# \n G.Session ID         : {0} \n L.Session ID         : {1} \n Nickname             : {2} \n Message id           : {3} \n Your Message Content : {4} \n Message Sent Date    : {5}", socketService.GlobalSessionID, socketService.LocalSessionID, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
+                Console.WriteLine("");
+                Console.WriteLine("");
+            }
+
         }
 
     }

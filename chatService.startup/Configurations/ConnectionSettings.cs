@@ -26,6 +26,8 @@ namespace chatService.startup.Configurations
         /// <returns></returns>
         public ConnectionSettings ReadJsonFile(string path)
         {
+            int count = 0;
+
             using (StreamReader file = new StreamReader(path))
             {
                 try
@@ -34,6 +36,7 @@ namespace chatService.startup.Configurations
                     ConnectionSettings data = null;
                     RootJsonFile res = JsonConvert.DeserializeObject<RootJsonFile>(jsonData);
 
+                    Console.WriteLine("######################### SETTINGS.JSON CONNECTION INFO ###########################");
                     foreach (var item in res.Settings)
                     {
                         if (item.Value.IsActive)
@@ -46,10 +49,11 @@ namespace chatService.startup.Configurations
                                 MaxCountQueue = item.Value.MaxCountQueue
                             };
                         }
-                        Console.WriteLine("");
+                        if (count != 0) Console.WriteLine("-----------------------------------------------------------------------------------");
+                        count++;
                         Console.WriteLine(" Name       = {0} \n Ipaddress  = {1} \n PortNumber = {2} \n IsActive   = {3}", item.Key, item.Value.IpAddress, item.Value.PortNumber, item.Value.IsActive);
                     }
-
+                    Console.WriteLine("#########################                                ###########################");
                     return data;
                 }
                 catch (Exception ex)

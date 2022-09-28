@@ -7,12 +7,15 @@
         private static Guid _id = Guid.NewGuid(); 
         public Guid Id { get { return _id ; } }
 
-        //singleton sınıfına ait sınıfın çalışma zamanında constructordan yararlanarak oluşturulmamamasını sağlar
         private GuidProvider()
         {
 
         }
 
+        /// <summary>
+        /// create instance for class
+        /// </summary>
+        /// <returns></returns>
         public static GuidProvider GetInstance()
         {
             if (_instance == null)

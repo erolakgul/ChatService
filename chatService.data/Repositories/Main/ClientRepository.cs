@@ -19,7 +19,7 @@ namespace chatService.data.Repositories.Main
 
         public ClientRepository()
         {
-
+            ///
         }
 
         public void Start(Socket socket)
@@ -33,11 +33,13 @@ namespace chatService.data.Repositories.Main
 
         public void OnReceivedCallBack(IAsyncResult asyncResult)
         {
-            int dataLength = _socket.EndReceive(asyncResult, out _socketError);
+            #region size of incoming data
+            int dataLength = _socket.EndReceive(asyncResult, out _socketError); 
+            #endregion
 
             if (dataLength <= 0 || _socketError != SocketError.Success)
             {
-                Console.WriteLine("#CLIENTREPOONRECEIVEDCALLBACK# There is no data. Connection must be controlled...");
+                Console.WriteLine("#Client_RepoOnReceivedCallBack# There is no data. Connection must be controlled...");
                 Console.WriteLine("");
                 return;
             }
@@ -45,12 +47,11 @@ namespace chatService.data.Repositories.Main
             byte[] dataBuffer = new byte[dataLength];
             Array.Copy(_dataBuffer, 0, dataBuffer, 0, dataBuffer.Length);
 
-            // Gelen datayı burada ele alacağız.
+            // incoming data is processed
             HandleReceivedData(dataBuffer);
 
-            // Tekrardan socket üzerinden data dinlemeye başlıyoruz.
 
-            // Socket üzerinden data dinlemeye başlıyoruz.
+            // continue to listen the socket after the data is processed
             _socket.BeginReceive(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, OnReceivedCallBack, null);
         }
 
@@ -72,7 +73,7 @@ namespace chatService.data.Repositories.Main
                     }
                     catch(Exception ex)
                     {
-                        Console.WriteLine("#clienthandlereceiveddata# :" + ex.Message);
+                        Console.WriteLine("#Client_RepoOnReceivedCallBack# :" + ex.Message);
                     }
                     finally
                     {

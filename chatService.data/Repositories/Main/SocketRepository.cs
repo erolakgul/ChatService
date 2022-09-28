@@ -9,8 +9,15 @@ using System.Text;
 
 namespace chatService.data.Repositories.Main
 {
+    #region delegate listener method
+    //public delegate void OnMessageReceived(MessageDto messageDto);
+    #endregion
+    /// <summary>
+    /// FOR CLIENTS
+    /// </summary>
     public class SocketRepository : ISocketRepository
     {
+        public OnMessageReceived _onMessageReceived;
         private Socket _socket;
         private IPEndPoint _ipEndPoint;
         private SocketError _socketError;
@@ -73,7 +80,7 @@ namespace chatService.data.Repositories.Main
                      int sentDataLength = _socket.EndSend(asyncResult, out _socketError);
                      if (sentDataLength <= 0 || _socketError != SocketError.Success)
                      {
-                         Console.WriteLine("#SOCKETREPOTRANSFER# There is no data. Connection must be controlled..");
+                         Console.WriteLine("#Socket_OnConnected# There is no data. Connection must be controlled..");
                          return;
                      }
                  }, null);
@@ -81,7 +88,7 @@ namespace chatService.data.Repositories.Main
 
                 if (_socketError != SocketError.Success)
                 {
-                    Console.WriteLine("#SOCKETREPOTRANSFER# Connection must be controlled..");
+                    Console.WriteLine("#Socket_OnConnected# Connection must be controlled..");
                 }
                 #endregion
 
@@ -96,7 +103,7 @@ namespace chatService.data.Repositories.Main
         {
             try
             {
-                #region firstly ended async connecting process , then listen the socket that connected
+                #region firstly ended async connecting process , then receive the socket that connected
                 _socket.EndConnect(asyncResult);
 
                 _socket.BeginReceive(_data, 0, _data.Length, SocketFlags.None, OnReceived, null);
@@ -108,7 +115,7 @@ namespace chatService.data.Repositories.Main
             }
             catch (Exception ex)
             {
-                Console.WriteLine("#SOCKETONCONNECTED# Process is unsuccessfuly => " + ex.Message);
+                Console.WriteLine("#Socket_OnConnected# Process is unsuccessfuly => " + ex.Message);
             }
         }
 
@@ -120,7 +127,7 @@ namespace chatService.data.Repositories.Main
 
             if (dataLength <= 0 || _socketError != SocketError.Success)
             {
-                Console.WriteLine("#SOCKETREPOONRECEIVED# There is no data. Connection must be controlled...");
+                Console.WriteLine("#Socket_OnConnected# There is no data. Connection must be controlled...");
                 Console.WriteLine("");
                 return;
             }

@@ -5,16 +5,12 @@ using chatService.core.UOW;
 using chatService.data.Repositories.Basis;
 using chatService.data.Repositories.Main;
 using chatService.helper.UOW.Concrete;
-using chatService.helper.UOW.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace chatService.data.UOW
 {
+    /// <summary>
+    /// repository container
+    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         private ErrorRepository _errorRepository;
