@@ -27,14 +27,15 @@ namespace chatService.startup.Configurations
         public ConnectionSettings ReadJsonFile(string path)
         {
             int count = 0;
+            ConnectionSettings data = null;
 
             using (StreamReader file = new StreamReader(path))
             {
                 try
                 {
                     string jsonData = file.ReadToEnd();
-                    ConnectionSettings data = null;
-                    RootJsonFile res = JsonConvert.DeserializeObject<RootJsonFile>(jsonData);
+                   
+                    RootJsonFile? res = JsonConvert.DeserializeObject<RootJsonFile>(jsonData);
 
                     Console.WriteLine("######################### SETTINGS.JSON CONNECTION INFO ###########################");
                     foreach (var item in res.Settings)
@@ -59,9 +60,8 @@ namespace chatService.startup.Configurations
                 catch (Exception ex)
                 {
                     Console.WriteLine("File not read => " + ex.Message);
-                    return null;
+                    return data = new();
                 }
-
             }
         }
 

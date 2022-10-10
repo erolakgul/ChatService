@@ -158,7 +158,7 @@ namespace chatService.data.Repositories.Main
 
                 try
                 {
-                     _socket.SendAsync(arrSegList, 0);
+                   await  _socket.SendAsync(arrSegList, 0);
 
                     System.Threading.Thread.Sleep(1000);
                     Console.WriteLine("");

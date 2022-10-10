@@ -28,6 +28,7 @@ ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomH
 ConnectionSettings connectionSettings = new();
 string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
+if (connectionSettings.IpAddress is null) Console.WriteLine("#server_program# ipaddresses is null"); goto END; 
 #endregion
 
 Console.WriteLine("");
@@ -71,7 +72,7 @@ Console.WriteLine("");
 
 Console.WriteLine("What is your message ?");
 #region read nickname
-string nickNameKey = Console.ReadLine();
+string? nickNameKey = Console.ReadLine();
 #endregion
 
 #region communication operation
@@ -156,7 +157,7 @@ if (nickNameKey.ToString().Length > 0)
                 errorService.AddErrorList(nickNameKey, listenerService.LocalSessionID, cahceErrorList);
                 #endregion
 
-                #region  list on service
+                #region  list errors on service
                 List<ErrorDto> errorDtoList = errorService.GetErrorList(nickNameKey, listenerService.LocalSessionID);
                 #endregion
 
@@ -173,51 +174,6 @@ if (nickNameKey.ToString().Length > 0)
 }
 #endregion
 
-
+END:
 
 Console.ReadLine();
-
-
-
-
-/*
-#region get instance for messagedto caching operation
-MessageService messageService = new MessageService(unitOfWork : iUnitOfWork);
-Guid sessionGuid = Guid.NewGuid();
-
-Console.WriteLine("What is your nickname ?");
-string nickNameKey = Console.ReadLine();
-
-string _content = String.Empty;
-
-if (nickNameKey.ToString().Length > 0)
-{
-    Console.WriteLine("....To send a new message, simply type NEW");
-    Console.WriteLine("");
-
-    while(Console.ReadLine() == "NEW")
-    {
-        Console.WriteLine("What is your message ?");
-        _content = Console.ReadLine();
-        if (_content.Length > 0)
-        {
-            Console.WriteLine(".."); Console.WriteLine("...");
-            Console.WriteLine("your message sending....");
-        }
-
-        messageService.FillMessage(nickNameKey, sessionGuid, new MessageDto()
-        { ID = Guid.NewGuid(), Content = _content, NickName = nickNameKey.ToString(), IsRead = false, CreatedDate = System.DateTime.Now }
-                          );
-
-        #region on service
-        MessageDto messageDto = messageService.GetMessage(nickNameKey, sessionGuid);
-        #endregion
-
-        System.Threading.Thread.Sleep(1000);
-        Console.WriteLine(" Communication ID     : {0} \n Nickname             : {1} \n Message id           : {2} \n Your Message Content : {3} \n Message Sent Date    : {4}", sessionGuid, messageDto.NickName, messageDto.ID, messageDto.Content, messageDto.CreatedDate);
-        Console.WriteLine("");
-        Console.WriteLine("");
-    }
-}
-#endregion
-*/

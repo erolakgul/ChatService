@@ -27,6 +27,7 @@ ICustomHelperUOW<Guid> customHelperGuidUOW = serviceProvider.GetService<ICustomH
 ConnectionSettings connectionSettings = new();
 string filePath = connectionSettings.GetLibraryPath();
 connectionSettings = connectionSettings.ReadJsonFile(filePath);
+if (connectionSettings.IpAddress is null) Console.WriteLine("#server_program# ipaddresses is null"); goto END;
 #endregion
 
 Console.WriteLine();
@@ -217,5 +218,5 @@ if (nickNameKey.ToString().Length > 0)
 #endregion
 
 
-
+END:
 Console.ReadLine();
